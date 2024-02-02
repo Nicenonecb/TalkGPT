@@ -1,5 +1,6 @@
 import {Button, Modal, Form, Input, Select, Radio, Slider} from 'antd';
 import {useState} from "react";
+import {languageOptions, textModelOptions, voiceOptions} from "@/app/config/options.config";
 
 export default function SettingModal(props: any) {
     const [form] = Form.useForm();
@@ -11,63 +12,25 @@ export default function SettingModal(props: any) {
     const handleSubmit = () => {
         form.submit()
         // localStorage.setItem('config', form)
-
+        onHideSettingModal()
     }
     const handleFinish = (values: any) => {
-        console.log(values); // 这里会打印出表单的值
-        localStorage.setItem('config', values)
+        const configString = JSON.stringify(values);
+        console.log(configString, values)
+        // 存储 JSON 字符串到 localStorage
+        localStorage.setItem('config', configString)
+        form.resetFields()
     };
-
-    const textModelOptions = [
-        {
-            value: 'gpt-4',
-            label: 'gpt-4'
-        },
-        {
-            value: 'gpt-4-turbo',
-            label: 'gpt-4-turbo',
-        },
-        {
-            value: 'gpt-3-turbo',
-            label: 'gpt-3-turbo',
-        }
-    ]
-    const voiceOptions = [
-        {
-            value: 'alloy',
-            label: 'Alloy'
-        },
-        {
-            value: 'echo',
-            label: 'Echo'
-        },
-        {
-            value: 'fable',
-            label: 'Fable'
-        },
-        {
-            value: 'onyx',
-            label: 'Onyx'
-        },
-        {
-            value: 'nova',
-            label: 'Nova'
-        },
-        {
-            value: 'shimmer',
-            label: 'Shimmer'
-        },
-    ];
 
 
     return (
-        <Modal open={open} onCancel={onHideSettingModal} onOk={handleSubmit}>
+        <Modal open={open} onCancel={onHideSettingModal} onOk={handleSubmit} title="配置">
             <Form form={form} layout="vertical" onFinish={handleFinish}>
-                <Form.Item label="API Key" name="api">
+                <Form.Item label="API Key" name="openai_key">
                     <Input placeholder="输入你的API Key"></Input>
                 </Form.Item>
 
-                <Form.Item label="网址/代理镜像源头" tooltip="What do you want others to call you?" name="url">
+                <Form.Item label="网址/代理镜像源头" tooltip="What do you want others to call you?" name="openai_url">
                     <Input placeholder="输入你的网址/镜像源"></Input>
                 </Form.Item>
 
@@ -106,6 +69,14 @@ export default function SettingModal(props: any) {
                     />
                 </Form.Item>
 
+                {/*<Form.Item label="母语" tooltip="" name='nativeLanguage'>*/}
+
+                {/*</Form.Item>*/}
+
+                <Form.Item label="学习语言" name="locale">
+                    <Select options={languageOptions}>
+                    </Select>
+                </Form.Item>
 
             </Form>
         </Modal>
