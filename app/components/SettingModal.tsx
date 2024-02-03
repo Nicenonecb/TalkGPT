@@ -11,13 +11,11 @@ export default function SettingModal(props: any) {
     const {open, onHideSettingModal} = props
     const handleSubmit = () => {
         form.submit()
-        // localStorage.setItem('config', form)
         onHideSettingModal()
     }
     const handleFinish = (values: any) => {
         const configString = JSON.stringify(values);
         console.log(configString, values)
-        // 存储 JSON 字符串到 localStorage
         localStorage.setItem('config', configString)
         form.resetFields()
     };

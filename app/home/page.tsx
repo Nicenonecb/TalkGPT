@@ -1,10 +1,11 @@
 'use client'
 import {AudioOutlined} from '@ant-design/icons';
 import {Input, Button, Form} from "antd";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {sceneList} from "@/app/config/dialogue.config";
 import {LOCALE} from "@/app/config/openai.config";
 import {Session, sessionStorageService} from "@/app/config/sidebar.config";
+import TextGen from "@/app/api/textGen";
 
 export default function MainContent() {
     const [inputValue, setInputValue] = useState('');
@@ -16,6 +17,14 @@ export default function MainContent() {
         form.submit()
     }
 
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await TextGen(true, '').then()
+            console.log(res, 'res')
+        }
+
+        fetchData()
+    }, [])
     const handleFinish = (values: any) => {
         const session: Session = {
             id: 0,

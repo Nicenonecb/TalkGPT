@@ -1,8 +1,11 @@
 import {OpenAITTS, OpenAITTSPayload} from '@lobehub/tts';
 import {OPENAI_API_KEY, OPENAI_PROXY_URL} from "@/app/config/openai.config";
 import {OpenaiVoice} from "@lobehub/tts";
+import {configObject} from "@/app/config/openai.config";
 
-export default function TTS(content: string, model: string, voice: OpenaiVoice,) {
+const model = configObject.voiceModel
+const voice = configObject.voice
+export default function TTS(content: string,) {
 
     const tts = new OpenAITTS(
         {

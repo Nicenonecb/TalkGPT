@@ -4,12 +4,12 @@ const textModelOptions = [
         label: 'gpt-4'
     },
     {
-        value: 'gpt-4-turbo',
-        label: 'gpt-4-turbo',
+        value: 'gpt-4-turbo-preview',
+        label: 'gpt-4-turbo-preview',
     },
     {
-        value: 'gpt-3-turbo',
-        label: 'gpt-3-turbo',
+        value: 'gpt-3.5-turbo',
+        label: 'gpt-3.5-turbo',
     }
 ]
 
