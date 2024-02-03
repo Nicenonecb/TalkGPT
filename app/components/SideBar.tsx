@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import {SettingOutlined, StarOutlined} from '@ant-design/icons'
 import {sessionStorageService} from "@/app/config/sidebar.config";
 
@@ -25,15 +26,14 @@ const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
                 {/* Chat groups and items */}
                 <nav>
                     {chatList.map((chat) => (
-                        <div key={chat.id} onClick={handleSessionPage}
-                             className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white">
+                        <Link href={`/chat/${chat.id}`} key={chat.id} onClick={handleSessionPage}
+                              className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white">
                             {chat.subject}
-                        </div>
+                        </Link>
                     ))}
                 </nav>
             </div>
             <div>
-
                 {/* User Config */}
                 <div className="flex items-center space-x-2 px-4 cursor-pointer" onClick={onShowSettingModal}>
                     <SettingOutlined size={24}/>

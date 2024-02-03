@@ -3,24 +3,14 @@ import {AudioOutlined} from '@ant-design/icons';
 import {Input, Button, Form} from "antd";
 import {useState} from "react";
 import {sceneList} from "@/app/config/dialogue.config";
-import {useOpenAISTT} from '@lobehub/tts/react';
-import {LOCALE, OPENAI_API_KEY, OPENAI_PROXY_URL} from "@/app/config/openai.config";
-import {Session, SessionList, sessionStorageService} from "@/app/config/sidebar.config";
+import {LOCALE} from "@/app/config/openai.config";
+import {Session, sessionStorageService} from "@/app/config/sidebar.config";
 
 export default function MainContent() {
     const [inputValue, setInputValue] = useState('');
     const [isInitialPage, setIsInitialPaget] = useState(true)
 
     const [form] = Form.useForm();
-    // const api: any = {
-    //     apikey: OPENAI_API_KEY,
-    //     proxyUrl: OPENAI_PROXY_URL,
-    // };
-    //
-    // const {text, start, stop, isLoading, isRecording, url, formattedTime} = useOpenAISTT(LOCALE, {
-    //     api,
-    // });
-
 
     const handleAddChat = () => {
         form.submit()
