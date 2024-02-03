@@ -3,14 +3,20 @@
 import SideBar from "@/app/components/SideBar";
 import MainContent from "@/app/home/page"
 import SettingModal from "@/app/components/SettingModal";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {ConfigProvider, theme} from "antd";
+import {Session, SessionList} from "@/app/config/sidebar.config";
+import {sessionStorageService} from "@/app/config/sidebar.config";
 
 export default function Home() {
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
     const [isSettingModalVisible, setIsSettingModalVisible] = useState(false)
     const [isHovering, setIsHovering] = useState(false);
 
+    useEffect(() => {
+        sessionStorageService.getSessionList();
+    }, [])
+    
     const handleToggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
         setIsHovering(!isHovering)

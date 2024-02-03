@@ -5,6 +5,7 @@ import {useState} from "react";
 import {sceneList} from "@/app/config/dialogue.config";
 import {useOpenAISTT} from '@lobehub/tts/react';
 import {LOCALE, OPENAI_API_KEY, OPENAI_PROXY_URL} from "@/app/config/openai.config";
+import {Session, SessionList, sessionStorageService} from "@/app/config/sidebar.config";
 
 export default function MainContent() {
     const [inputValue, setInputValue] = useState('');
@@ -26,7 +27,14 @@ export default function MainContent() {
     }
 
     const handleFinish = (values: any) => {
-
+        const session: Session = {
+            id: 0,
+            details: values.details,
+            subject: values.subject,
+            locale: LOCALE,
+        }
+        sessionStorageService.saveSession(session);
+        setIsInitialPaget(false)
     }
     return (
         <div className="bg-slate-900 w-full flex flex-col  items-center ">
@@ -57,7 +65,7 @@ export default function MainContent() {
 
                                     </Input>
                                 </Form.Item>
-                                <Form.Item name='detail'>
+                                <Form.Item name='details'>
                                     <Input placeholder="细节：专注微前端领域">
                                     </Input>
                                 </Form.Item>
