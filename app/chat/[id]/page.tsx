@@ -67,31 +67,31 @@ export default function Chat({params}: { params: { id: string } }) {
     }, [isRecording, text, isTranscriptionComplete, isLoading, url]);
 
     //页面第一次加载
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             await getFistGPTRes();
-    //         } catch (error) {
-    //             console.error('Error fetching data:', error);
-    //         }
-    //     };
-    //
-    //     fetchData().then();
-    // }, [params.id]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                await getFistGPTRes();
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData().then();
+    }, [params.id]);
     const getGPtRes = async () => {
         const res = await TextGen(false, text)
         const gptResUrl = await TTS(res);
-        // if (res) {
-        //     const gptItem = {
-        //         type: 'tutor',
-        //         content: res,
-        //         url: gptResUrl,
-        //     };
-        //
-        //     setSessionContentList(prevList => [...prevList, gptItem]);
-        //     setTtsText(res);
-        //     setTtsAudioUrl(gptResUrl);
-        // }
+        if (res) {
+            const gptItem = {
+                type: 'tutor',
+                content: res,
+                url: gptResUrl,
+            };
+
+            setSessionContentList(prevList => [...prevList, gptItem]);
+            setTtsText(res);
+            setTtsAudioUrl(gptResUrl);
+        }
     };
 
 // 第一次反馈播放
@@ -103,21 +103,20 @@ export default function Chat({params}: { params: { id: string } }) {
     }, [ttsAudioUrl]);
 
 
-    // const getFistGPTRes = async () => {
-    //     const res = await TextGen(true, '')
-    //     // const {data, code} = await sessionApi.getSessionDetailById(id);
-    //     if (code === 200) {
-    //         const gptResUrl: Promise<string | null> | '' = await ttsFunc(data.content);
-    //         const gptItem = {
-    //             type: 'tutor',
-    //             content: data.content,
-    //             url: gptResUrl,
-    //         };
-    //         setTtsAudioUrl(gptResUrl);
-    //         setSessionContentList([gptItem]);
-    //         setTtsText(data.content);
-    //     }
-    // };
+    const getFistGPTRes = async () => {
+        const res = await TextGen(true, '')
+        if (res) {
+            const gptResUrl: Promise<string | null> | '' = await TTS(res);
+            const gptItem = {
+                type: 'tutor',
+                content: res,
+                url: gptResUrl,
+            };
+            setTtsAudioUrl(gptResUrl);
+            setSessionContentList([gptItem]);
+            setTtsText(res);
+        }
+    };
 
 
     useEffect(() => {

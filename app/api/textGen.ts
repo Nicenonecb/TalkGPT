@@ -23,6 +23,6 @@ export default async function TextGen(isInit = false, input: string | undefined)
     if (!response.ok) {
         throw new Error(`Server responded with ${response.status}`);
     }
-
-    return await response.json();
+    const res = await response.json();
+    return res.choices[0].message.content
 }

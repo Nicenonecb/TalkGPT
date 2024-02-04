@@ -17,14 +17,14 @@ export default function MainContent() {
         form.submit()
     }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const res = await TextGen(true, '').then()
-            console.log(res, 'res')
-        }
-
-        fetchData()
-    }, [])
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const res = await TextGen(true, '').then()
+    //         console.log(res, 'res')
+    //     }
+    //
+    //     fetchData().then()
+    // }, [])
     const handleFinish = (values: any) => {
         const session: Session = {
             id: 0,
