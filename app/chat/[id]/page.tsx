@@ -30,20 +30,13 @@ const api: any =
         serviceUrl: '',
     };
 
-const text_para = {
-    model: configObject.textModel,
-    message: [{
-        role: 'user',
-        content: '',
-    }]
-}
 
 export default function Chat({params}: { params: { id: string } }) {
-    const [ttsAudioUrl, setTtsAudioUrl] = useState(null);
+    const [ttsAudioUrl, setTtsAudioUrl] = useState('' as string | null);
     const [sessionContentList, setSessionContentList] = useState([] as SessionContent[]);
     const [ttsText, setTtsText] = useState('');
-    // language
-    const [language, setLanguage] = useState(locale);
+    // // language
+    // const [language, setLanguage] = useState(locale);
     const [isTranscriptionComplete, setIsTranscriptionComplete] = useState(false);
 
 
@@ -106,12 +99,14 @@ export default function Chat({params}: { params: { id: string } }) {
     const getFistGPTRes = async () => {
         const res = await TextGen(true, '')
         if (res) {
-            const gptResUrl: Promise<string | null> | '' = await TTS(res);
+            let gptResUrl: string | null = await TTS(res);
+
             const gptItem = {
                 type: 'tutor',
                 content: res,
                 url: gptResUrl,
             };
+
             setTtsAudioUrl(gptResUrl);
             setSessionContentList([gptItem]);
             setTtsText(res);
