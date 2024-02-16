@@ -154,6 +154,8 @@ export default function Chat({params}: { params: { id: string } }) {
         ]);
     }
     return (
+
+
         <div className='bg-black h-screen w-full p-4 text-white flex flex-col justify-between'>
             {/* 聊天气泡 */}
             <div className='space-y-2 flex flex-col gap-5 overflow-auto'>

@@ -16,8 +16,6 @@ const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
         <div
             className="bg-black text-white w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out flex flex-col justify-between">
             <div>
-
-
                 <div className="flex items-center space-x-2 px-4">
                     <StarOutlined size={24}/>
                     <span>TalkGPT</span>
