@@ -1,30 +1,18 @@
 'use client'
-import {AudioOutlined} from '@ant-design/icons';
+
 import {Input, Button, Form} from "antd";
 import {useEffect, useState} from "react";
 import {sceneList} from "@/app/config/dialogue.config";
 import {LOCALE} from "@/app/config/openai.config";
 import {Session, sessionStorageService} from "@/app/config/sidebar.config";
-import TextGen from "@/app/api/textGen";
+import {SettingOutlined, ArrowUpOutlined} from '@ant-design/icons'
+
 
 export default function MainContent() {
     const [inputValue, setInputValue] = useState('');
     const [isInitialPage, setIsInitialPaget] = useState(true)
+    const [isInputChange, setInputChange] = useState(false)
 
-    const [form] = Form.useForm();
-
-    const handleAddChat = () => {
-        form.submit()
-    }
-
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         const res = await TextGen(true, '').then()
-    //         console.log(res, 'res')
-    //     }
-    //
-    //     fetchData().then()
-    // }, [])
     const handleFinish = (values: any) => {
         const session: Session = {
             id: 0,
@@ -35,45 +23,36 @@ export default function MainContent() {
         sessionStorageService.saveSession(session);
         setIsInitialPaget(false)
     }
+    const handleInputChange = (e: any) => {
+        e.target.value ? setInputChange(true) : setInputChange(false)
+    }
+    const InputAfterIcon = () => {
+        return isInputChange ? <ArrowUpOutlined/> : null
+    }
     return (
-        <div className="bg-slate-900 w-full flex flex-col  items-center ">
+        // flex flex-col  items-center
+        <div className="bg-slate-900 w-full   flex flex-col items-center ">
             {isInitialPage ? (
                 <>
-                    <div className="flex flex-1 justify-center items-center ">
+                    <div className="flex flex-1 justify-center  items-center ">
                         What do you want to talk to me
                     </div>
-                    <div className="flex flex-col gap-y-10">
-                        <div className="flex items-center justify-center gap-x-20 ">
+                    <div className="flex flex-col w-full  items-center ">
+                        <div className="flex items-center justify-center  gap-10 mb-8">
                             {sceneList.map((scene, index) => (
-                                <div key={index}
-                                     className="flex flex-col gap-3 mb-4 border-2 h-24 w-60 border-gray-500 rounded  group p-3">
-                                    <div className="text-lg ">{scene.title}</div>
-                                    <div className="flex gap-3">
-                                        <div className="text-gray-600">{scene.content}</div>
-                                        <AudioOutlined className="hidden group-hover:block"/>
-                                    </div>
-                                </div>
+
+                                <div key={index} className="    ">{scene.title}</div>
+
+
                             ))}
                         </div>
-                        <div className="flex w-full justify-center items-center">
-
-                            <Form form={form} onFinish={handleFinish} className="w-2/3">
-                                <Form.Item name="subject">
-                                    <Input placeholder="主题：前端开发面试">
 
 
-                                    </Input>
-                                </Form.Item>
-                                <Form.Item name='details'>
-                                    <Input placeholder="细节：专注微前端领域">
-                                    </Input>
-                                </Form.Item>
-                            </Form>
+                        <Input placeholder="主题：前端开发面试"
+                               className='mb-10 h-10 w-1/3' onChange={handleInputChange}
+                               suffix={<InputAfterIcon/>}>
+                        </Input>
 
-                            <Button className="" shape="round" onClick={handleAddChat}>
-
-                            </Button>
-                        </div>
                     </div>
                 </>) : null}
 

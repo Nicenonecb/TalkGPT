@@ -19,7 +19,6 @@ export default function Home() {
             <ConfigProvider theme={{
                 algorithm: window.matchMedia('(prefers-color-scheme: dark)').matches ? theme.darkAlgorithm : theme.defaultAlgorithm,
             }}>
-
                 <MainContent></MainContent>
             </ConfigProvider>
         </main>
