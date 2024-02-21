@@ -1,6 +1,5 @@
 import {OpenAITTS, OpenAITTSPayload} from '@lobehub/tts';
 import {OPENAI_API_KEY, OPENAI_PROXY_URL} from "@/app/config/openai.config";
-import {OpenaiVoice} from "@lobehub/tts";
 import {configObject} from "@/app/config/openai.config";
 
 const model = configObject.voiceModel

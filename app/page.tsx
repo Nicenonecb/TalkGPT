@@ -4,10 +4,10 @@ import {useEffect, useState} from "react";
 import {ConfigProvider, theme} from "antd";
 
 import {sessionStorageService} from "@/app/config/sidebar.config";
+import MainContent from "@/app/home/page";
 
 
 export default function Home() {
-
 
     useEffect(() => {
         sessionStorageService.getSessionList();
@@ -15,15 +15,12 @@ export default function Home() {
 
 
     return (
-        <main className="flex min-h-screen">
+        <main className="flex min-h-screen w-full">
             <ConfigProvider theme={{
-                // 1. 单独使用暗色算法
-                algorithm: theme.darkAlgorithm,
-                // 2. 组合使用暗色算法与紧凑算法
-                // algorithm: [theme.darkAlgorithm, theme.compactAlgorithm],
+                algorithm: window.matchMedia('(prefers-color-scheme: dark)').matches ? theme.darkAlgorithm : theme.defaultAlgorithm,
             }}>
 
-
+                <MainContent></MainContent>
             </ConfigProvider>
         </main>
     );

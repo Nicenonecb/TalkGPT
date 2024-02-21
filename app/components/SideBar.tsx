@@ -3,6 +3,9 @@ import Link from 'next/link';
 import {SettingOutlined, StarOutlined} from '@ant-design/icons'
 import {sessionStorageService} from "@/app/config/sidebar.config";
 
+import {useRouter} from 'next/navigation'
+
+
 interface SideBarProps {
     onShowSettingModal: () => void;
 }
@@ -10,19 +13,22 @@ interface SideBarProps {
 const handleSessionPage = () => {
 
 }
+
 const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
+
     const chatList = sessionStorageService.getSessionList()
+    const router = useRouter()
     return (
         <div
             className="bg-black text-white w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out flex flex-col justify-between">
             <div>
-                <div className="flex items-center space-x-2 px-4">
+                <div className="flex items-center space-x-2 px-4 mb-10 cursor-pointer" onClick={() => router.push('/')}>
                     <StarOutlined size={24}/>
                     <span>TalkGPT</span>
                 </div>
 
                 {/* Chat groups and items */}
-                <nav>
+                <nav className="flex flex-col  justify-center">
                     {chatList.map((chat) => (
                         <Link href={`/chat/${chat.id}`} key={chat.id} onClick={handleSessionPage}
                               className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white">
