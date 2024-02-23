@@ -41,8 +41,7 @@ export default function MainContent() {
                         <div className="flex items-center justify-center  gap-10 mb-8">
                             {sceneList.map((scene, index) => (
 
-                                <div key={index} className="    ">{scene.title}</div>
-
+                                <div key={index} className="">{scene.title}</div>
 
                             ))}
                         </div>

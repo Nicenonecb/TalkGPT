@@ -31,7 +31,7 @@ const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
                 <nav className="flex flex-col  justify-center">
                     {chatList.map((chat) => (
                         <Link href={`/chat/${chat.id}`} key={chat.id} onClick={handleSessionPage}
-                              className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white">
+                              className="block py-2.5 px-5 rounded transition duration-200 hover:bg-gray-700 hover:text-white">
                             {chat.subject}
                         </Link>
                     ))}

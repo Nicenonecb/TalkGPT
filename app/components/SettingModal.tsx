@@ -1,5 +1,5 @@
 import {Button, Modal, Form, Input, Select, Radio, Slider} from 'antd';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {languageOptions, textModelOptions, voiceOptions} from "@/app/config/options.config";
 
 export default function SettingModal(props: any) {
@@ -19,10 +19,20 @@ export default function SettingModal(props: any) {
         localStorage.setItem('config', configString)
         form.resetFields()
     };
+    useEffect(() => {
+        const configString = localStorage.getItem('config');
+        if (configString) {
+            const config = JSON.parse(configString);
+            form.setFieldsValue({
+                ...config,
+            });
+        }
+    }, [form, open]);
 
 
     return (
-        <Modal open={open} onCancel={onHideSettingModal} onOk={handleSubmit} title="配置">
+        <Modal open={open} onCancel={onHideSettingModal} onOk={handleSubmit} title="配置" okText='确认'
+               cancelText='取消'>
             <Form form={form} layout="vertical" onFinish={handleFinish}>
                 <Form.Item label="API Key" name="openai_key">
                     <Input placeholder="输入你的API Key"></Input>
@@ -66,10 +76,7 @@ export default function SettingModal(props: any) {
                         step={0.01}
                     />
                 </Form.Item>
-
-                {/*<Form.Item label="母语" tooltip="" name='nativeLanguage'>*/}
-
-                {/*</Form.Item>*/}
+                
 
                 <Form.Item label="学习语言" name="locale">
                     <Select options={languageOptions}>
