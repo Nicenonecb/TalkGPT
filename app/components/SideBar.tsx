@@ -15,7 +15,7 @@ const handleSessionPage = () => {
 }
 
 const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
-    const [hoveredChatId, setHoveredChatId] = useState(null);
+    const [hoveredChatId, setHoveredChatId] = useState<number | null>(null);
     const chatList = sessionStorageService.getSessionList()
     const router = useRouter()
 
@@ -35,13 +35,10 @@ const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
                               onMouseOver={() => setHoveredChatId(chat.id)}
                               onMouseOut={() => setHoveredChatId(null)}
                               className="block py-2.5 px-5 rounded transition duration-200 hover:bg-gray-700 hover:text-white ">
-                            <div className="flex justify-between" onMouseOver={() => setIsShowSet(true)}
-                                 onMouseDown={() => setIsShowSet(false)}>
+                            <div className="flex justify-between">
                                 <span>{chat.subject}</span>
                                 {hoveredChatId === chat.id && <div className="flex gap-3">
-
                                     <DeleteOutlined></DeleteOutlined>
-
                                     <EditOutlined></EditOutlined>
                                 </div>
                                 }
