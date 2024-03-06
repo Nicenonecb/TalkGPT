@@ -1,9 +1,7 @@
 const storedConfig = localStorage.getItem('config');
 const configObject = storedConfig ? JSON.parse(storedConfig) : {};
 
-
 const OPENAI_API_KEY = configObject['openai_key']
-
 const OPENAI_PROXY_URL = configObject['openai_url'];
 
 const LOCALE = configObject['locale']

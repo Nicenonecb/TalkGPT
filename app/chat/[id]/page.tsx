@@ -35,11 +35,7 @@ export default function Chat({params}: { params: { id: string } }) {
     const [ttsAudioUrl, setTtsAudioUrl] = useState('' as string | null);
     const [sessionContentList, setSessionContentList] = useState([] as SessionContent[]);
     const [ttsText, setTtsText] = useState('');
-    // // language
-    // const [language, setLanguage] = useState(locale);
     const [isTranscriptionComplete, setIsTranscriptionComplete] = useState(false);
-
-
     const {text, start, stop, isLoading, isRecording, url, formattedTime} = useOpenAISTT(locale, {
         api,
     });

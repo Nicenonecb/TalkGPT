@@ -2,7 +2,6 @@ const sceneList = [
     {
         title: '购物',
     },
-
     {
         title: '搭讪',
     }

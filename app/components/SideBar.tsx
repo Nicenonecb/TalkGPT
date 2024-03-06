@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Link from 'next/link';
-import {SettingOutlined, StarOutlined} from '@ant-design/icons'
+import {SettingOutlined, StarOutlined, EllipsisOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons'
 import {sessionStorageService} from "@/app/config/sidebar.config";
 
 import {useRouter} from 'next/navigation'
-
+import {Dropdown, Button} from "antd";
 
 interface SideBarProps {
     onShowSettingModal: () => void;
@@ -15,9 +15,10 @@ const handleSessionPage = () => {
 }
 
 const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
-
+    const [hoveredChatId, setHoveredChatId] = useState(null);
     const chatList = sessionStorageService.getSessionList()
     const router = useRouter()
+
     return (
         <div
             className="bg-black text-white w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out flex flex-col justify-between">
@@ -31,12 +32,25 @@ const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
                 <nav className="flex flex-col  justify-center">
                     {chatList.map((chat) => (
                         <Link href={`/chat/${chat.id}`} key={chat.id} onClick={handleSessionPage}
-                              className="block py-2.5 px-5 rounded transition duration-200 hover:bg-gray-700 hover:text-white">
-                            {chat.subject}
+                              onMouseOver={() => setHoveredChatId(chat.id)}
+                              onMouseOut={() => setHoveredChatId(null)}
+                              className="block py-2.5 px-5 rounded transition duration-200 hover:bg-gray-700 hover:text-white ">
+                            <div className="flex justify-between" onMouseOver={() => setIsShowSet(true)}
+                                 onMouseDown={() => setIsShowSet(false)}>
+                                <span>{chat.subject}</span>
+                                {hoveredChatId === chat.id && <div className="flex gap-3">
+
+                                    <DeleteOutlined></DeleteOutlined>
+
+                                    <EditOutlined></EditOutlined>
+                                </div>
+                                }
+                            </div>
                         </Link>
                     ))}
                 </nav>
             </div>
+
             <div>
                 {/* User Config */}
                 <div className="flex items-center space-x-2 px-4 cursor-pointer" onClick={onShowSettingModal}>
@@ -44,6 +58,7 @@ const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
                     <span>设置</span>
                 </div>
             </div>
+
         </div>
     );
 };
