@@ -5,6 +5,7 @@ import {SettingOutlined, StarOutlined, DeleteOutlined, EditOutlined} from '@ant-
 import {sessionStorageService} from "@/app/config/sidebar.config";
 
 import {useRouter} from 'next/navigation'
+import {lsSetItem} from "@/app/api/storage";
 
 interface SideBarProps {
     onShowSettingModal: () => void;
@@ -13,19 +14,25 @@ interface SideBarProps {
 const handleSessionPage = () => {
 
 }
-
+const sessionArr = sessionStorageService.getSessionList() ?? []
+console.log(sessionArr, '1121')
 const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
     const [isClient, setIsClient] = useState(false)
     const [hoveredChatId, setHoveredChatId] = useState<number | null>(null);
+    const [chatList, setChatList] = useState(sessionArr)
     const router = useRouter()
+
     useEffect(() => {
+        //避免水合错误
         setIsClient(true)
     }, []);
 
-    const handleDeleteItem = (id: number) => {
 
+    const handleDeleteItem = (id: number) => {
+        const newArr = chatList.filter(item => item.id !== id);
+        setChatList(newArr); // Update state with the filtered array
+        lsSetItem('sessionList', newArr);
     }
-    const chatList = sessionStorageService.getSessionList() ?? []
     return (
         <div
             className="bg-black text-white w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out flex flex-col justify-between">
@@ -37,7 +44,7 @@ const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
 
                 {/* Chat groups and items */}
                 <nav className="flex flex-col  justify-center">
-                    {isClient && chatList.map((chat) => (
+                    {isClient && Array.isArray(chatList) && chatList.map((chat) => (
                         <Link href={`/chat/${chat.id}`} key={chat.id} onClick={handleSessionPage}
                               onMouseOver={() => setHoveredChatId(chat.id)}
                               onMouseOut={() => setHoveredChatId(null)}

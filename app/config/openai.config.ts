@@ -11,7 +11,7 @@ const configObject = lsGetItem<Config>('config', {
     locale: ''
 })
 
-let OPENAI_API_KEY, OPENAI_PROXY_URL, LOCALE;
+let OPENAI_API_KEY, OPENAI_PROXY_URL, LOCALE: string;
 
 if (configObject) {
     OPENAI_API_KEY = configObject['openai_key']

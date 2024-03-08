@@ -14,10 +14,12 @@ export default function MainContent() {
     const [isInputChange, setInputChange] = useState(false)
 
     const handleFinish = (values: any) => {
+        console.log(values, '12')
+        //  details: values.details,
+        // @ts-ignore
         const session: Session = {
             id: 0,
-            details: values.details,
-            subject: values.subject,
+            subject: values.target.value,
             locale: LOCALE,
         }
         sessionStorageService.saveSession(session);
@@ -46,9 +48,8 @@ export default function MainContent() {
                             ))}
                         </div>
 
-
                         <Input placeholder="主题：前端开发面试"
-                               className='mb-10 h-10 w-1/3' onChange={handleInputChange}
+                               className='mb-10 h-10 ' onChange={handleInputChange} onPressEnter={handleFinish}
                                suffix={<InputAfterIcon/>}>
                         </Input>
 
