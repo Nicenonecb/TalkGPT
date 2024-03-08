@@ -1,29 +1,26 @@
 'use client'
 
-import {Input, Button, Form} from "antd";
-import {useEffect, useState} from "react";
+import {Input} from "antd";
+import {useState} from "react";
 import {sceneList} from "@/app/config/dialogue.config";
 import {LOCALE} from "@/app/config/openai.config";
 import {Session, sessionStorageService} from "@/app/config/sidebar.config";
-import {SettingOutlined, ArrowUpOutlined} from '@ant-design/icons'
+import {ArrowUpOutlined} from '@ant-design/icons'
 
 
 export default function MainContent() {
     const [inputValue, setInputValue] = useState('');
-    const [isInitialPage, setIsInitialPaget] = useState(true)
+    const [isInitialPage, setIsInitialPage] = useState(true)
     const [isInputChange, setInputChange] = useState(false)
 
     const handleFinish = (values: any) => {
-        console.log(values, '12')
-        //  details: values.details,
-        // @ts-ignore
         const session: Session = {
             id: 0,
             subject: values.target.value,
             locale: LOCALE,
         }
         sessionStorageService.saveSession(session);
-        setIsInitialPaget(false)
+        setIsInitialPage(false)
     }
     const handleInputChange = (e: any) => {
         e.target.value ? setInputChange(true) : setInputChange(false)
@@ -42,21 +39,18 @@ export default function MainContent() {
                     <div className="flex flex-col w-full  items-center ">
                         <div className="flex items-center justify-center  gap-10 mb-8">
                             {sceneList.map((scene, index) => (
-
                                 <div key={index} className="">{scene.title}</div>
-
                             ))}
                         </div>
-
-                        <Input placeholder="主题：前端开发面试"
-                               className='mb-10 h-10 ' onChange={handleInputChange} onPressEnter={handleFinish}
-                               suffix={<InputAfterIcon/>}>
-                        </Input>
-
+                        <div className="flex gap-3 mb-10 w-full">
+                            <Input placeholder="主题：前端开发面试" className="w-full"
+                                   onChange={handleInputChange} onPressEnter={handleFinish}
+                            >
+                            </Input>
+                            <InputAfterIcon></InputAfterIcon>
+                        </div>
                     </div>
                 </>) : null}
-
-
         </div>
     )
 }
