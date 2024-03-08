@@ -1,4 +1,4 @@
-export type SessionList = Session[]
+import {lsGetItem, lsSetItem} from "@/app/api/storage";
 
 export type Session = {
     id: number,
@@ -10,14 +10,15 @@ export type Session = {
 }
 
 export const sessionStorageService = {
-    getSessionList: (): Session[] => {
-        const sessionList = localStorage.getItem('sessionList');
-        return sessionList ? JSON.parse(sessionList) : [];
+    getSessionList: (): Session[] | null => {
+        return lsGetItem('sessionList', [])
     },
     saveSession: (session: Session): void => {
         const sessionList = sessionStorageService.getSessionList();
-        session.id = sessionList.length + 1;
-        sessionList.push(session);
-        localStorage.setItem('sessionList', JSON.stringify(sessionList));
+        if (Array.isArray(sessionList)) {
+            session.id = sessionList.length + 1;
+            sessionList?.push(session);
+            lsSetItem('sessionList', sessionList);
+        }
     }
 };

@@ -10,10 +10,10 @@ export default function SettingModal(props: any) {
 
     const {open, onHideSettingModal} = props
     const handleSubmit = () => {
-        form.submit()
-        onHideSettingModal()
-    }
-    const handleFinish = (values: any) => {
+            form.submit()
+            onHideSettingModal()
+        }
+    ;const handleFinish = (values: any) => {
         const configString = JSON.stringify(values);
         console.log(configString, values)
         localStorage.setItem('config', configString)
@@ -27,7 +27,7 @@ export default function SettingModal(props: any) {
                 ...config,
             });
         }
-    }, [form, open]);
+    }, [form, open])
 
 
     return (
@@ -76,7 +76,7 @@ export default function SettingModal(props: any) {
                         step={0.01}
                     />
                 </Form.Item>
-                
+
 
                 <Form.Item label="学习语言" name="locale">
                     <Select options={languageOptions}>

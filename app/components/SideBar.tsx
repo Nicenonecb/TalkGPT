@@ -1,10 +1,10 @@
-import React, {useState} from 'react';
+'use client'
+import React, {useEffect, useState} from 'react';
 import Link from 'next/link';
-import {SettingOutlined, StarOutlined, EllipsisOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons'
+import {SettingOutlined, StarOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons'
 import {sessionStorageService} from "@/app/config/sidebar.config";
 
 import {useRouter} from 'next/navigation'
-import {Dropdown, Button} from "antd";
 
 interface SideBarProps {
     onShowSettingModal: () => void;
@@ -15,14 +15,17 @@ const handleSessionPage = () => {
 }
 
 const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
+    const [isClient, setIsClient] = useState(false)
     const [hoveredChatId, setHoveredChatId] = useState<number | null>(null);
     const router = useRouter()
-    const chatList = sessionStorageService.getSessionList()
+    useEffect(() => {
+        setIsClient(true)
+    }, []);
 
-    const handleDeleItem = (id) => {
+    const handleDeleteItem = (id: number) => {
 
     }
-
+    const chatList = sessionStorageService.getSessionList() ?? []
     return (
         <div
             className="bg-black text-white w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out flex flex-col justify-between">
@@ -34,19 +37,21 @@ const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
 
                 {/* Chat groups and items */}
                 <nav className="flex flex-col  justify-center">
-                    {chatList.map((chat) => (
+                    {isClient && chatList.map((chat) => (
                         <Link href={`/chat/${chat.id}`} key={chat.id} onClick={handleSessionPage}
                               onMouseOver={() => setHoveredChatId(chat.id)}
                               onMouseOut={() => setHoveredChatId(null)}
                               className="block py-2.5 px-5 rounded transition duration-200 hover:bg-gray-700 hover:text-white ">
+
                             <div className="flex justify-between">
-                                <span>{chat.subject}</span>
+                                <div>{chat.subject}</div>
                                 {hoveredChatId === chat.id && <div className="flex gap-3">
-                                    <DeleteOutlined onClick={() => handleDeleItem(chat.id)}></DeleteOutlined>
+                                    <DeleteOutlined onClick={() => handleDeleteItem(chat.id)}></DeleteOutlined>
                                     <EditOutlined></EditOutlined>
                                 </div>
                                 }
                             </div>
+
                         </Link>
                     ))}
                 </nav>
