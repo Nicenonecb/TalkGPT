@@ -16,8 +16,12 @@ const handleSessionPage = () => {
 
 const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
     const [hoveredChatId, setHoveredChatId] = useState<number | null>(null);
-    const chatList = sessionStorageService.getSessionList()
     const router = useRouter()
+    const chatList = sessionStorageService.getSessionList()
+
+    const handleDeleItem = (id) => {
+
+    }
 
     return (
         <div
@@ -38,7 +42,7 @@ const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
                             <div className="flex justify-between">
                                 <span>{chat.subject}</span>
                                 {hoveredChatId === chat.id && <div className="flex gap-3">
-                                    <DeleteOutlined></DeleteOutlined>
+                                    <DeleteOutlined onClick={() => handleDeleItem(chat.id)}></DeleteOutlined>
                                     <EditOutlined></EditOutlined>
                                 </div>
                                 }
