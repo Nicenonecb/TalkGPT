@@ -5,6 +5,7 @@ import {sessionStorageService} from "@/app/config/sidebar.config";
 import {useEffect, useState} from "react";
 import {theme, ConfigProvider} from "antd";
 
+const isDarkMode = typeof window !== 'undefined' ? window.matchMedia('(prefers-color-scheme: dark)').matches : null;
 export default function SidebarToggle() {
 
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -29,7 +30,7 @@ export default function SidebarToggle() {
 
     return (
         <ConfigProvider theme={{
-            algorithm: window.matchMedia('(prefers-color-scheme: dark)').matches ? theme.darkAlgorithm : theme.defaultAlgorithm,
+            algorithm: isDarkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
         }}>
 
             {isSidebarVisible && <SideBar onShowSettingModal={handleShowSettingModal}/>}

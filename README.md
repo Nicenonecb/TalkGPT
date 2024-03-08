@@ -1,4 +1,8 @@
-This is a learn language website by openai
+# TalkGPT
+
+## Introduce
+
+Implement local deployment and language learning based on openAI API
 
 ## Getting Started
 
