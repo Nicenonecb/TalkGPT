@@ -1,18 +1,22 @@
 'use client'
 
 import {Input} from "antd";
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {sceneList} from "@/app/config/dialogue.config";
 import {LOCALE} from "@/app/config/openai.config";
 import {Session, sessionStorageService} from "@/app/config/sidebar.config";
 import {ArrowUpOutlined} from '@ant-design/icons'
-
+import {useSessionList} from '@/app/util/SessionContext';
 
 export default function MainContent() {
     const [inputValue, setInputValue] = useState('');
     const [isInitialPage, setIsInitialPage] = useState(true)
     const [isInputChange, setInputChange] = useState(false)
-
+    const [clientClassName, setClientClassName] = useState('');
+    const {refreshSessionList} = useSessionList();
+    useEffect(() => {
+        setClientClassName('ant-input css-dev-only-do-not-override-1b0bdye ant-input-outlined');
+    }, []);
     const handleFinish = (values: any) => {
         const session: Session = {
             id: 0,
@@ -21,7 +25,9 @@ export default function MainContent() {
         }
         sessionStorageService.saveSession(session);
         setIsInitialPage(false)
+        refreshSessionList()
     }
+
     const handleInputChange = (e: any) => {
         e.target.value ? setInputChange(true) : setInputChange(false)
     }
@@ -43,7 +49,7 @@ export default function MainContent() {
                             ))}
                         </div>
                         <div className="flex gap-3 mb-10 w-full">
-                            <Input placeholder="主题：前端开发面试" className="w-full"
+                            <Input placeholder="主题：前端开发面试" className={clientClassName}
                                    onChange={handleInputChange} onPressEnter={handleFinish}
                             >
                             </Input>

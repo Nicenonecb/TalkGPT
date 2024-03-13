@@ -10,8 +10,9 @@ export type Session = {
 }
 
 export const sessionStorageService = {
-    getSessionList: (): Session[] | null => {
-        return lsGetItem('sessionList', [])
+    getSessionList: (): Session[] => {
+        const sessionList = lsGetItem<Session[]>('sessionList', []);
+        return sessionList ?? [];
     },
     saveSession: (session: Session): void => {
         const sessionList = sessionStorageService.getSessionList();
@@ -19,6 +20,7 @@ export const sessionStorageService = {
             session.id = sessionList.length + 1;
             sessionList?.push(session);
             lsSetItem('sessionList', sessionList);
+            console.log(121)
         }
     }
 };
