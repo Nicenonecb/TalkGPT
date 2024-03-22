@@ -5,7 +5,7 @@ import {useOpenAISTT} from '@lobehub/tts/react';
 import {configObject, OPENAI_API_KEY, OPENAI_PROXY_URL} from "@/app/config/openai.config";
 import {Button} from 'antd'
 import {HeartOutlined, SoundOutlined, TranslationOutlined, AudioMutedOutlined, AudioOutlined} from '@ant-design/icons';
-import TextGen from "@/app/api/textGen";
+import Text from "@/app/api/text";
 import TTS from '@/app/api/tts'
 
 interface SessionContent {
@@ -68,7 +68,7 @@ export default function Chat({params}: { params: { id: string } }) {
         fetchData().then();
     }, [params.id]);
     const getGPtRes = async () => {
-        const res = await TextGen(false, text)
+        const res = await Text(false, text)
         const gptResUrl = await TTS(res);
         if (res) {
             const gptItem = {
@@ -93,7 +93,7 @@ export default function Chat({params}: { params: { id: string } }) {
 
 
     const getFistGPTRes = async () => {
-        const res = await TextGen(true, '')
+        const res = await Text(true, '')
         if (res) {
             let gptResUrl: string | null = await TTS(res);
 

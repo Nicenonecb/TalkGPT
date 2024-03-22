@@ -2,7 +2,8 @@
 
 ## Introduce
 
-Implement local deployment and language learning based on openAI API
+Enhance your language learning experience with "TalkGPT," a local deployment leveraging OpenAI's API for interactive
+language practice.
 
 ## Getting Started
 
@@ -18,12 +19,21 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit http://localhost:3000 to explore the app.
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use
-the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)
-from the creators of Next.js.
+Deploy easily via Vercel Platform, built by the creators of Next.js. For detailed instructions, refer to the Next.js
+deployment documentation.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+For the full setup and more details, visit the project repository.
+
+## Next Steps
+
+- Multi-language Support: Aiming to make the app accessible to a broader audience by supporting multiple languages.
+- Integration with Microsoft and Google Language Models: Leveraging the powerful language models provided by tech giants
+  to enhance linguistic capabilities.
+- Partnership with 11Labs: This could indicate plans to integrate state-of-the-art voice synthesis technology, perhaps
+  for more natural language interactions.
+- 3D Human Avatar Integration: Bringing in 3D models could offer a more engaging and interactive user experience,
+  possibly for language learning or communication simulations.
