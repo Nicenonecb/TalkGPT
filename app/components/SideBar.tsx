@@ -20,7 +20,6 @@ const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
 
     const [isClient, setIsClient] = useState(false)
     const [hoveredChatId, setHoveredChatId] = useState<number | null>(null);
-    // const [chatList, setChatList] = useState(sessionArr)
 
     const router = useRouter()
 
@@ -30,23 +29,10 @@ const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
     }, []);
 
 
-    // useEffect(() => {
-    //     console.log(window, '21')
-    //     const handleStorageChange = (event: any) => {
-    //         if (event.key === 'sessionList') {
-    //             setChatList(sessionStorageService.getSessionList());
-    //         }
-    //     };
-    //
-    //     window.addEventListener('storage', handleStorageChange);
-    //     return () => window.removeEventListener('storage', handleStorageChange);
-    // }, []);
-
-
     const handleDeleteItem = (id: number) => {
         const newArr = sessionList.filter(item => item.id !== id);
-        lsSetItem('sessionList', newArr); // Update localStorage
-        refreshSessionList(); // Ensure global state is updated
+        lsSetItem('sessionList', newArr);
+        refreshSessionList();
     };
     return (
         <div
