@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import Link from 'next/link';
 import {SettingOutlined, StarOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons'
 import {sessionStorageService} from "@/app/config/sidebar.config";
-import {useRouter} from 'next/navigation'
+import {useRouter, usePathname} from 'next/navigation'
 import {lsSetItem} from "@/app/api/storage";
 import {useSessionList} from '@/app/util/SessionContext';
 
@@ -16,23 +16,26 @@ const handleSessionPage = () => {
 }
 const sessionArr = sessionStorageService.getSessionList() ?? []
 const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
-    const {sessionList, refreshSessionList} = useSessionList();
-
     const [isClient, setIsClient] = useState(false)
     const [hoveredChatId, setHoveredChatId] = useState<number | null>(null);
+    const {sessionList, refreshSessionList} = useSessionList();
 
     const router = useRouter()
-
+    const params = usePathname()
+    const lastNumber = params.split("/").pop()
     useEffect(() => {
         //避免水合错误
         setIsClient(true)
     }, []);
 
-
-    const handleDeleteItem = (id: number) => {
+    const handleDeleteItem = (e, id: number) => {
+        e.preventDefault()
         const newArr = sessionList.filter(item => item.id !== id);
         lsSetItem('sessionList', newArr);
         refreshSessionList();
+        if (id.toString() === lastNumber) {
+            router.push('/')
+        }
     };
     return (
         <div
@@ -54,14 +57,15 @@ const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
                             <div className="flex justify-between">
                                 <div>{chat.subject}</div>
                                 {hoveredChatId === chat.id && <div className="flex gap-3">
-                                    <DeleteOutlined onClick={() => handleDeleteItem(chat.id)}></DeleteOutlined>
-                                    <EditOutlined></EditOutlined>
+                                    <DeleteOutlined onClick={(e) => handleDeleteItem(e, chat.id)}></DeleteOutlined>
+                                    {/*<EditOutlined></EditOutlined>*/}
                                 </div>
                                 }
                             </div>
 
                         </Link>
                     ))}
+
                 </nav>
             </div>
 
@@ -72,7 +76,7 @@ const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
                     <span>设置</span>
                 </div>
             </div>
-
+            {/*<button onClick={() => router.push('/')}>112</button>*/}
         </div>
     );
 };
