@@ -21,5 +21,9 @@ export const sessionStorageService = {
             sessionList?.push(session);
             lsSetItem('sessionList', sessionList);
         }
+    },
+    getSessionById: (id: number): Session | undefined => {
+        const sessionList = sessionStorageService.getSessionList();
+        return sessionList.find(session => session.id === id);
     }
 };

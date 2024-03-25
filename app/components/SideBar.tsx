@@ -28,9 +28,9 @@ const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
         setIsClient(true)
     }, []);
 
-    const handleDeleteItem = (e, id: number) => {
+    const handleDeleteItem = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: number) => {
         e.preventDefault()
-        const newArr = sessionList.filter(item => item.id !== id);
+        const newArr = sessionList.filter((item: { id: number; }) => item.id !== id);
         lsSetItem('sessionList', newArr);
         refreshSessionList();
         if (id.toString() === lastNumber) {
@@ -76,7 +76,6 @@ const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
                     <span>设置</span>
                 </div>
             </div>
-            {/*<button onClick={() => router.push('/')}>112</button>*/}
         </div>
     );
 };

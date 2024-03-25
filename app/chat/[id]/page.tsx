@@ -7,6 +7,7 @@ import {Button} from 'antd'
 import {HeartOutlined, SoundOutlined, TranslationOutlined, AudioMutedOutlined, AudioOutlined} from '@ant-design/icons';
 import Text from "@/app/api/text";
 import TTS from '@/app/api/tts'
+import {sessionStorageService} from "@/app/config/sidebar.config";
 
 interface SessionContent {
     type: string;
@@ -40,6 +41,7 @@ export default function Chat({params}: { params: { id: string } }) {
         api,
     });
 
+
     useEffect(() => {
         if (!isRecording && text && isTranscriptionComplete && url) {
             setSessionContentList(prevList => {
@@ -68,7 +70,7 @@ export default function Chat({params}: { params: { id: string } }) {
         fetchData().then();
     }, [params.id]);
     const getGPtRes = async () => {
-        const res = await Text(false, text)
+        const res = await Text(false, text, params.id)
         const gptResUrl = await TTS(res);
         if (res) {
             const gptItem = {
@@ -93,7 +95,7 @@ export default function Chat({params}: { params: { id: string } }) {
 
 
     const getFistGPTRes = async () => {
-        const res = await Text(true, '')
+        const res = await Text(true, '', params.id)
         if (res) {
             let gptResUrl: string | null = await TTS(res);
 
