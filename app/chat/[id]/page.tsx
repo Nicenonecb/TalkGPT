@@ -37,7 +37,7 @@ export default function Chat({params}: { params: { id: string } }) {
     const [ttsText, setTtsText] = useState('');
     const [isPlaying, setIsPlaying] = useState(false);
     const [isTranscriptionComplete, setIsTranscriptionComplete] = useState(false);
-    const {text, start, stop, isLoading, isRecording, url, formattedTime} = useOpenAISTT(locale, {
+    const {text, start, stop, isLoading, isRecording, url, formattedTime} = useOpenAISTT(locale || 'en-US', {
         api,
     });
 
