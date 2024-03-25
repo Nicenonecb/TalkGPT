@@ -6,7 +6,7 @@ const SessionListContext = createContext();
 export const useSessionList = () => useContext(SessionListContext);
 
 export const SessionListProvider = ({children}) => {
-    const [sessionList, setSessionList] = useState([]);
+    const [sessionList, setSessionList] = useState(sessionStorageService.getSessionList());
 
     const refreshSessionList = () => {
         // Fetch session list from localStorage

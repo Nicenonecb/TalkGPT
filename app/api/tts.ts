@@ -9,7 +9,7 @@ export default function TTS(content: string,) {
     const tts = new OpenAITTS(
         {
             OPENAI_API_KEY: OPENAI_API_KEY,
-            OPENAI_PROXY_URL: OPENAI_PROXY_URL
+            OPENAI_PROXY_URL: OPENAI_PROXY_URL + 'v1/',
         }
     )
     const fetchTTS = async () => {

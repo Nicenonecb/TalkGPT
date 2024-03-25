@@ -49,7 +49,7 @@ export default function MainContent() {
                             ))}
                         </div>
                         <div className="flex gap-3 mb-10 w-full">
-                            <Input placeholder="主题：前端开发面试" className={clientClassName}
+                            <Input placeholder="主题：和同学聊天" className={clientClassName}
                                    onChange={handleInputChange} onPressEnter={handleFinish}
                             >
                             </Input>

@@ -20,7 +20,10 @@ export const sessionStorageService = {
             session.id = sessionList.length + 1;
             sessionList?.push(session);
             lsSetItem('sessionList', sessionList);
-            console.log(121)
         }
+    },
+    getSessionById: (id: number): Session | undefined => {
+        const sessionList = sessionStorageService.getSessionList();
+        return sessionList.find(session => session.id === id);
     }
 };
