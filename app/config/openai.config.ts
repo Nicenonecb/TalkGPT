@@ -3,12 +3,14 @@ import {lsGetItem} from '@/app/api/storage'
 type  Config = {
     openai_key: string,
     openai_url: string,
-    locale: string
+    locale: string,
+    textModel: string,
 }
 const configObject = lsGetItem<Config>('config', {
     openai_key: '',
     openai_url: '',
-    locale: ''
+    locale: '',
+    textModel: '',
 })
 
 let OPENAI_API_KEY: string = configObject ? configObject['openai_key'] : '';
