@@ -1,13 +1,12 @@
 'use client'
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {useOpenAISTT} from '@lobehub/tts/react';
 import {configObject, OPENAI_API_KEY, OPENAI_PROXY_URL} from "@/app/config/openai.config";
 import {Button} from 'antd'
 import {HeartOutlined, SoundOutlined, TranslationOutlined, AudioMutedOutlined, AudioOutlined} from '@ant-design/icons';
 import Text from "@/app/api/text";
 import TTS from '@/app/api/tts'
-import {sessionStorageService} from "@/app/config/sidebar.config";
 
 interface SessionContent {
     type: string;
@@ -16,7 +15,7 @@ interface SessionContent {
     isRealtime?: boolean;
 }
 
-const locale = configObject.locale
+const locale = configObject?.locale
 
 const api: any =
     {
@@ -36,103 +35,72 @@ export default function Chat({params}: { params: { id: string } }) {
     const [ttsAudioUrl, setTtsAudioUrl] = useState('' as string | null);
     const [sessionContentList, setSessionContentList] = useState([] as SessionContent[]);
     const [ttsText, setTtsText] = useState('');
+    const [isPlaying, setIsPlaying] = useState(false);
     const [isTranscriptionComplete, setIsTranscriptionComplete] = useState(false);
     const {text, start, stop, isLoading, isRecording, url, formattedTime} = useOpenAISTT(locale, {
         api,
     });
 
-
-    useEffect(() => {
-        if (!isRecording && text && isTranscriptionComplete && url) {
-            setSessionContentList(prevList => {
-                return prevList.map(item => {
-                    if (item.isRealtime) {
-                        return {...item, isRealtime: false, url: url}; // 将实时条目转换为常规条目
-                    }
-                    return item;
-                });
-            });
-            getGPtRes().then();
-            setIsTranscriptionComplete(false);
-        }
-    }, [isRecording, text, isTranscriptionComplete, isLoading, url]);
-
-    //页面第一次加载
-    useEffect(() => {
-        const fetchData = async () => {
+    const playAudio = useCallback(async (audioUrl: string | undefined) => {
+        if (audioUrl && !isPlaying) {
+            setIsPlaying(true);
+            const audio = new Audio(audioUrl);
             try {
-                await getFistGPTRes();
+                await audio.play();
+                audio.onended = () => setIsPlaying(false);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error('Audio play failed', error);
+                setIsPlaying(false);
             }
-        };
+        }
+    }, [isPlaying]);
 
-        fetchData().then();
-    }, [params.id]);
-    const getGPtRes = async () => {
-        const res = await Text(false, text, params.id)
-        const gptResUrl = await TTS(res);
+    const fetchAndPlayGPTResponse = useCallback(async (initial = false, userText = '') => {
+        const res = await Text(initial, userText, params.id);
         if (res) {
-            const gptItem = {
-                type: 'tutor',
-                content: res,
-                url: gptResUrl,
-            };
-
-            setSessionContentList(prevList => [...prevList, gptItem]);
-            setTtsText(res);
+            const gptResUrl = await TTS(res);
             setTtsAudioUrl(gptResUrl);
+            const gptItem = {type: 'tutor', content: res, url: gptResUrl};
+            setSessionContentList(prevList => [...prevList, gptItem]);
         }
-    };
+    }, [params.id]);
 
-// 第一次反馈播放
+    // 初始加载
     useEffect(() => {
-        if (ttsAudioUrl) {
-            const audio = new Audio(ttsAudioUrl);
-            audio.play().catch(error => console.error('Audio play failed', error));
-        }
+        fetchAndPlayGPTResponse(true).catch(console.error);
+    }, []);
+
+    // 监听ttsAudioUrl变化，播放音频
+    useEffect(() => {
+        // @ts-ignore
+        playAudio(ttsAudioUrl).catch(console.error);
     }, [ttsAudioUrl]);
 
-
-    const getFistGPTRes = async () => {
-        const res = await Text(true, '', params.id)
-        if (res) {
-            let gptResUrl: string | null = await TTS(res);
-
-            const gptItem = {
-                type: 'tutor',
-                content: res,
-                url: gptResUrl,
-            };
-
-            setTtsAudioUrl(gptResUrl);
-            setSessionContentList([gptItem]);
-            setTtsText(res);
+    // 处理录音完成后的逻辑
+    useEffect(() => {
+        if (!isRecording && text && url) {
+            fetchAndPlayGPTResponse(false, text).catch(console.error);
+            setSessionContentList(prevList => prevList.map(item =>
+                item.isRealtime ? {...item, isRealtime: false, url: url} : item
+            ));
         }
-    };
+    }, [isRecording, text, url, fetchAndPlayGPTResponse]);
 
-
+    // 处理实时文字更新
     useEffect(() => {
         if (isRecording) {
             setSessionContentList(prevList => {
                 const newList = [...prevList];
                 const realtimeIndex = newList.findIndex(item => item.isRealtime);
                 if (realtimeIndex !== -1) {
-                    newList[realtimeIndex] = {...newList[realtimeIndex], content: text} as SessionContent;
+                    // @ts-ignore
+                    newList[realtimeIndex] = {...newList[realtimeIndex], content: text};
                 }
                 return newList;
             });
         }
     }, [text, isRecording]);
 
-    const playAudio = (value: any) => {
-        if (value) {
-            const audio = new Audio(value);
-            audio.play().catch(error => console.error(' play failed', error));
-        } else {
-            console.error('Invalid audio URL:', value);
-        }
-    };
 
     const handleStop = () => {
         stop(); // 调用原始的 stop 方法
