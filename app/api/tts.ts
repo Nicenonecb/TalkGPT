@@ -2,7 +2,9 @@ import {OpenAITTS, OpenAITTSPayload} from '@lobehub/tts';
 import {OPENAI_API_KEY, OPENAI_PROXY_URL} from "@/app/config/openai.config";
 import {configObject} from "@/app/config/openai.config";
 
+// @ts-ignore
 const model = configObject.voiceModel
+// @ts-ignore
 const voice = configObject.voice
 export default function TTS(content: string,) {
 

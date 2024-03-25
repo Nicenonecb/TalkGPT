@@ -8,8 +8,9 @@ export default async function Text(isInit = false, input: string | undefined, id
     const currentChat = sessionStorageService.getSessionById(parseInt(id, 10))
     // @ts-ignore
     const promote = `您现在是${LOCALE}语言大师， 我现在想和您聊${currentChat.subject}，请你用${LOCALE} 回复我`
+
     const config = {
-        model: configObject.textModel,
+        model: configObject?.textModel,
         messages: [{
             role: 'user',
             content: isInit ? promote : input,
