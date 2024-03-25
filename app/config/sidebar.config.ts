@@ -20,7 +20,6 @@ export const sessionStorageService = {
             session.id = sessionList.length + 1;
             sessionList?.push(session);
             lsSetItem('sessionList', sessionList);
-            console.log(121)
         }
     }
 };

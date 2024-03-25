@@ -147,7 +147,7 @@ export default function Chat({params}: { params: { id: string } }) {
     return (
 
 
-        <div className='bg-black h-screen w-full p-4 text-white flex flex-col justify-between'>
+        <div className='bg-slate-900 h-screen w-full p-4 text-white flex flex-col justify-between'>
             {/* 聊天气泡 */}
             <div className='space-y-2 flex flex-col gap-5 overflow-auto'>
                 {sessionContentList.map((item, index) => (
@@ -155,10 +155,10 @@ export default function Chat({params}: { params: { id: string } }) {
 -center ${item.type === 'tutor' ? 'justify-start' : 'justify-end'} space-x-2`} key={index}>
                         <div className='w-[800px] rounded-lg border border-gray-600 p-4'>
                             <p>{item.content}</p>
-                            <div className='flex gap-5 text-base'>
+                            <div className='flex gap-5 mt-3 text-base'>
                                 <SoundOutlined onClick={() => playAudio(item.url)}/>
-                                <TranslationOutlined/>
-                                <HeartOutlined/>
+                                {/*<TranslationOutlined/>*/}
+                                {/*<HeartOutlined/>*/}
                             </div>
                         </div>
                     </div>
@@ -168,7 +168,7 @@ export default function Chat({params}: { params: { id: string } }) {
 
             {/* 录音控制按钮 */}
             <div className='flex items-center'>
-                <div className='flex-1 rounded p-2 bg-gray-800'>
+                <div className='flex-1'>
                     {isRecording ? (
                         <Button block icon={<AudioMutedOutlined/>} onClick={handleStop}>
                             Stop {formattedTime}
