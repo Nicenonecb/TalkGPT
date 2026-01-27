@@ -1,8 +1,7 @@
 'use client'
 import SideBar from "@/app/components/SideBar";
 import SettingModal from "@/app/components/SettingModal";
-import {sessionStorageService} from "@/app/config/sidebar.config";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {theme, ConfigProvider} from "antd";
 
 const isDarkMode = typeof window !== 'undefined' ? window.matchMedia('(prefers-color-scheme: dark)').matches : null;
@@ -11,10 +10,6 @@ export default function SidebarToggle() {
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
     const [isSettingModalVisible, setIsSettingModalVisible] = useState(false)
     const [isHovering, setIsHovering] = useState(false);
-
-    useEffect(() => {
-        sessionStorageService.getSessionList();
-    }, [])
 
     const handleToggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);

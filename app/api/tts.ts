@@ -1,17 +1,19 @@
 import {OpenAITTS, OpenAITTSPayload} from '@lobehub/tts';
-import {OPENAI_API_KEY, OPENAI_PROXY_URL} from "@/app/config/openai.config";
-import {configObject} from "@/app/config/openai.config";
+import type {AppConfig} from "@/app/config/openai.config";
 
-// @ts-ignore
-const model = configObject.voiceModel
-// @ts-ignore
-const voice = configObject.voice
-export default function TTS(content: string,) {
+const normalizeApiBase = (baseUrl: string): string => {
+    const trimmed = baseUrl.trim();
+    if (!trimmed) {
+        return '';
+    }
+    return trimmed.endsWith('/') ? trimmed : `${trimmed}/`;
+};
 
+export default function TTS(content: string, config: AppConfig) {
     const tts = new OpenAITTS(
         {
-            OPENAI_API_KEY: OPENAI_API_KEY,
-            OPENAI_PROXY_URL: OPENAI_PROXY_URL + 'v1/',
+            OPENAI_API_KEY: config.openai_key,
+            OPENAI_PROXY_URL: `${normalizeApiBase(config.openai_url)}v1/`,
         }
     )
     const fetchTTS = async () => {
@@ -19,8 +21,8 @@ export default function TTS(content: string,) {
             const payload: OpenAITTSPayload = {
                 input: content,
                 options: {
-                    model: model,
-                    voice: voice,
+                    model: config.voiceModel,
+                    voice: config.voice,
                 },
             };
             const response: Response = await tts.create(payload);

@@ -1,22 +1,21 @@
-import {lsGetItem} from '@/app/api/storage'
+export type AppConfig = {
+    openai_key: string;
+    openai_url: string;
+    locale: string;
+    textModel: string;
+    voiceModel: string;
+    voice: string;
+    randomness: number;
+    speechRate: number;
+};
 
-type  Config = {
-    openai_key: string,
-    openai_url: string,
-    locale: string,
-    textModel: string,
-}
-const configObject = lsGetItem<Config>('config', {
+export const defaultConfig: AppConfig = {
     openai_key: '',
     openai_url: '',
-    locale: '',
-    textModel: '',
-})
-
-let OPENAI_API_KEY: string = configObject ? configObject['openai_key'] : '';
-let OPENAI_PROXY_URL: string = configObject ? configObject['openai_url'] : '';
-let LOCALE: string = configObject ? configObject['locale'] : '';
-
-
-export {OPENAI_API_KEY, OPENAI_PROXY_URL, LOCALE, configObject}
-
+    locale: 'en-US',
+    textModel: 'gpt-3.5-turbo',
+    voiceModel: 'tts-1',
+    voice: 'alloy',
+    randomness: 1,
+    speechRate: 1,
+};
