@@ -1,7 +1,7 @@
 'use client'
 import React, {useEffect, useState} from 'react';
 import Link from 'next/link';
-import {SettingOutlined, StarOutlined, DeleteOutlined} from '@ant-design/icons'
+import {SettingOutlined, StarOutlined, DeleteOutlined, BookOutlined, HeartOutlined} from '@ant-design/icons'
 import {sessionStorageService} from "@/app/config/sidebar.config";
 import {useRouter, usePathname} from 'next/navigation'
 import {useSessionList} from '@/app/util/SessionContext';
@@ -38,6 +38,18 @@ const SideBar: React.FC<SideBarProps> = ({onShowSettingModal}) => {
                     <StarOutlined size={24}/>
                     <span>TalkGPT</span>
                 </div>
+
+                <div className="px-4 mb-2 text-xs text-gray-400">学习工具</div>
+                <nav className="flex flex-col mb-6">
+                    <Link href="/vocabulary" className="flex items-center gap-2 py-2.5 px-5 rounded transition duration-200 hover:bg-gray-700 hover:text-white">
+                        <BookOutlined/>
+                        <span>生词本</span>
+                    </Link>
+                    <Link href="/sentences" className="flex items-center gap-2 py-2.5 px-5 rounded transition duration-200 hover:bg-gray-700 hover:text-white">
+                        <HeartOutlined/>
+                        <span>收藏句子</span>
+                    </Link>
+                </nav>
 
                 {/* Chat groups and items */}
                 <nav className="flex flex-col  justify-center">

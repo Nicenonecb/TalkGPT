@@ -2,13 +2,14 @@
 
 import React, {useEffect, useState, useCallback, useMemo, useRef} from 'react';
 import {useOpenAISTT} from '@lobehub/tts/react';
-import {Button, Input} from 'antd'
-import {SoundOutlined, AudioMutedOutlined, AudioOutlined} from '@ant-design/icons';
+import {Button, Input, Modal, Tooltip, message} from 'antd'
+import {SoundOutlined, AudioMutedOutlined, AudioOutlined, HeartOutlined, HeartFilled, BookOutlined} from '@ant-design/icons';
 import Text from "@/app/api/text";
 import TTS from '@/app/api/tts'
 import {sessionStorageService, Session, SessionMessage} from "@/app/config/sidebar.config";
 import {useConfig} from '@/app/util/ConfigContext';
 import {useSessionList} from '@/app/util/SessionContext';
+import {favoriteSentenceStorageService, vocabularyStorageService} from '@/app/config/learning.config';
 
 
 export default function Chat({params}: { params: { id: string } }) {
@@ -18,6 +19,11 @@ export default function Chat({params}: { params: { id: string } }) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [session, setSession] = useState<Session | null>(null);
     const sessionRef = useRef<Session | null>(null);
+    const [favoriteSentenceMap, setFavoriteSentenceMap] = useState<Record<string, string>>({});
+    const [isVocabModalOpen, setIsVocabModalOpen] = useState(false);
+    const [vocabWord, setVocabWord] = useState('');
+    const [vocabNote, setVocabNote] = useState('');
+    const [vocabSource, setVocabSource] = useState('');
     const {config} = useConfig();
     const {refreshSessionList} = useSessionList();
 
@@ -55,6 +61,26 @@ export default function Chat({params}: { params: { id: string } }) {
             })
             .catch(console.error);
     }, [params.id]);
+
+    const normalizeSentence = useCallback((content: string) => content.trim(), []);
+
+    // 刷新收藏句子映射，便于快速判断是否已收藏
+    const refreshFavoriteSentences = useCallback(async () => {
+        try {
+            const list = await favoriteSentenceStorageService.getSentenceList();
+            const nextMap: Record<string, string> = {};
+            list.forEach((item) => {
+                nextMap[item.normalizedContent] = item.id;
+            });
+            setFavoriteSentenceMap(nextMap);
+        } catch (error) {
+            console.error('读取收藏句子失败:', error);
+        }
+    }, []);
+
+    useEffect(() => {
+        refreshFavoriteSentences().catch(console.error);
+    }, [refreshFavoriteSentences]);
 
     const persistMessages = useCallback(async (nextList: SessionMessage[]) => {
         // 将消息列表写回 IndexedDB，保证刷新后可恢复
@@ -188,6 +214,74 @@ export default function Chat({params}: { params: { id: string } }) {
         setInputValue('');
         await fetchAndPlayGPTResponse(false, trimmedText);
     }, [inputValue, updateListAndPersist, fetchAndPlayGPTResponse]);
+
+    // 收藏/取消收藏当前句子
+    const handleToggleFavoriteSentence = useCallback(async (item: SessionMessage) => {
+        const normalizedContent = normalizeSentence(item.content);
+        if (!normalizedContent) {
+            message.warning('句子内容为空，无法收藏');
+            return;
+        }
+        const existingId = favoriteSentenceMap[normalizedContent];
+        try {
+            if (existingId) {
+                await favoriteSentenceStorageService.deleteSentenceById(existingId);
+                await refreshFavoriteSentences();
+                message.success('已取消收藏');
+                return;
+            }
+            await favoriteSentenceStorageService.addSentence({
+                content: normalizedContent,
+                locale: config.locale,
+                sessionId: session?.id,
+                role: item.type,
+            });
+            await refreshFavoriteSentences();
+            message.success('已收藏');
+        } catch (error) {
+            console.error('收藏句子失败:', error);
+            message.error('收藏操作失败，请稍后重试');
+        }
+    }, [favoriteSentenceMap, config.locale, normalizeSentence, refreshFavoriteSentences, session?.id]);
+
+    // 尝试读取用户当前选中的文本作为生词
+    const handleOpenVocabModal = useCallback((item: SessionMessage) => {
+        const selected = typeof window !== 'undefined' ? window.getSelection()?.toString() ?? '' : '';
+        const candidate = selected.trim();
+        setVocabWord(candidate);
+        setVocabNote('');
+        setVocabSource(item.content);
+        setIsVocabModalOpen(true);
+    }, []);
+
+    const handleCloseVocabModal = useCallback(() => {
+        setIsVocabModalOpen(false);
+        setVocabWord('');
+        setVocabNote('');
+        setVocabSource('');
+    }, []);
+
+    const handleSaveVocab = useCallback(async () => {
+        const trimmedWord = vocabWord.trim();
+        if (!trimmedWord) {
+            message.warning('请输入要加入的生词');
+            return;
+        }
+        try {
+            await vocabularyStorageService.addVocabularyItem({
+                word: trimmedWord,
+                note: vocabNote.trim() || undefined,
+                source: vocabSource || undefined,
+                locale: config.locale,
+                sessionId: session?.id,
+            });
+            message.success('已加入生词本');
+            handleCloseVocabModal();
+        } catch (error) {
+            console.error('保存生词失败:', error);
+            message.error('保存生词失败，请稍后重试');
+        }
+    }, [config.locale, handleCloseVocabModal, session?.id, vocabNote, vocabSource, vocabWord]);
     return (
 
 
@@ -210,9 +304,25 @@ export default function Chat({params}: { params: { id: string } }) {
                         <div className='w-[800px] rounded-lg border border-gray-600 p-4'>
                             <p>{item.content}</p>
                             <div className='flex gap-5 mt-3 text-base'>
-                                <SoundOutlined onClick={() => playAudio(item.url)}/>
-                                {/*<TranslationOutlined/>*/}
-                                {/*<HeartOutlined/>*/}
+                                <Tooltip title="播放语音">
+                                    <SoundOutlined className="cursor-pointer" onClick={() => playAudio(item.url)}/>
+                                </Tooltip>
+                                <Tooltip title="收藏句子">
+                                    {favoriteSentenceMap[normalizeSentence(item.content)] ? (
+                                        <HeartFilled
+                                            className="cursor-pointer text-rose-500"
+                                            onClick={() => handleToggleFavoriteSentence(item)}
+                                        />
+                                    ) : (
+                                        <HeartOutlined
+                                            className="cursor-pointer"
+                                            onClick={() => handleToggleFavoriteSentence(item)}
+                                        />
+                                    )}
+                                </Tooltip>
+                                <Tooltip title="加入生词本">
+                                    <BookOutlined className="cursor-pointer" onClick={() => handleOpenVocabModal(item)}/>
+                                </Tooltip>
                             </div>
                         </div>
                     </div>
@@ -253,6 +363,39 @@ export default function Chat({params}: { params: { id: string } }) {
                     </Button>
                 </div>
             </div>
+
+            <Modal
+                open={isVocabModalOpen}
+                onCancel={handleCloseVocabModal}
+                onOk={() => handleSaveVocab().catch(console.error)}
+                okText="保存"
+                cancelText="取消"
+                title="加入生词本"
+            >
+                <div className="flex flex-col gap-3">
+                    <div>
+                        <div className="text-sm text-gray-400 mb-1">生词</div>
+                        <Input
+                            placeholder="输入生词或选择后点击"
+                            value={vocabWord}
+                            onChange={(event) => setVocabWord(event.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <div className="text-sm text-gray-400 mb-1">备注/释义</div>
+                        <Input.TextArea
+                            placeholder="可选，记录记忆点"
+                            value={vocabNote}
+                            onChange={(event) => setVocabNote(event.target.value)}
+                            rows={3}
+                        />
+                    </div>
+                    <div>
+                        <div className="text-sm text-gray-400 mb-1">来源句子</div>
+                        <Input.TextArea value={vocabSource} rows={3} readOnly />
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 

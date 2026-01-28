@@ -1,7 +1,7 @@
-export type StoreName = 'sessions' | 'config';
+export type StoreName = 'sessions' | 'config' | 'vocabulary' | 'favoriteSentences';
 
 const DB_NAME = 'talkgpt';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 const ensureIndexedDb = (): void => {
     if (typeof window === 'undefined' || !('indexedDB' in window)) {
@@ -21,6 +21,12 @@ const openDatabase = (): Promise<IDBDatabase> => {
             }
             if (!db.objectStoreNames.contains('config')) {
                 db.createObjectStore('config', {keyPath: 'key'});
+            }
+            if (!db.objectStoreNames.contains('vocabulary')) {
+                db.createObjectStore('vocabulary', {keyPath: 'id'});
+            }
+            if (!db.objectStoreNames.contains('favoriteSentences')) {
+                db.createObjectStore('favoriteSentences', {keyPath: 'id'});
             }
         };
         request.onsuccess = () => resolve(request.result);
