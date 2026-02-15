@@ -3,10 +3,11 @@
 import {Input} from "antd";
 import {useState, useEffect} from "react";
 import {sceneList} from "@/app/config/dialogue.config";
-import {LOCALE} from "@/app/config/openai.config";
 import {Session, sessionStorageService} from "@/app/config/sidebar.config";
 import {ArrowUpOutlined} from '@ant-design/icons'
 import {useSessionList} from '@/app/util/SessionContext';
+import {useConfig} from '@/app/util/ConfigContext';
+import {useRouter} from 'next/navigation';
 
 export default function MainContent() {
     const [inputValue, setInputValue] = useState('');
@@ -14,18 +15,21 @@ export default function MainContent() {
     const [isInputChange, setInputChange] = useState(false)
     const [clientClassName, setClientClassName] = useState('');
     const {refreshSessionList} = useSessionList();
+    const {config} = useConfig();
+    const router = useRouter();
     useEffect(() => {
         setClientClassName('ant-input css-dev-only-do-not-override-1b0bdye ant-input-outlined');
     }, []);
-    const handleFinish = (values: any) => {
+    const handleFinish = async (values: any) => {
         const session: Session = {
             id: 0,
             subject: values.target.value,
-            locale: LOCALE,
+            locale: config.locale,
         }
-        sessionStorageService.saveSession(session);
+        const savedSession = await sessionStorageService.saveSession(session);
         setIsInitialPage(false)
-        refreshSessionList()
+        await refreshSessionList()
+        router.push(`/chat/${savedSession.id}`);
     }
 
     const handleInputChange = (e: any) => {
@@ -60,4 +64,3 @@ export default function MainContent() {
         </div>
     )
 }
-

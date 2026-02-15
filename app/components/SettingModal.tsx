@@ -1,33 +1,33 @@
 import {Modal, Form, Input, Select, Radio, Slider} from 'antd';
 import {useEffect, useState} from "react";
 import {languageOptions, textModelOptions, voiceOptions} from "@/app/config/options.config";
+import {useConfig} from '@/app/util/ConfigContext';
 
 export default function SettingModal(props: any) {
     const [form] = Form.useForm();
 
     const [randomnessValue, setRandomnessValue] = useState(1)
     const [speechRateValue, setSpeechRateValue] = useState(1); // 初始值根据需要设置
+    const {config, saveConfig} = useConfig();
 
     const {open, onHideSettingModal} = props
     const handleSubmit = () => {
             form.submit()
             onHideSettingModal()
         }
-    ;const handleFinish = (values: any) => {
-        const configString = JSON.stringify(values);
-        console.log(configString, values)
-        localStorage.setItem('config', configString)
+    ;const handleFinish = async (values: any) => {
+        await saveConfig(values);
         form.resetFields()
     };
     useEffect(() => {
-        const configString = localStorage.getItem('config');
-        if (configString) {
-            const config = JSON.parse(configString);
+        if (open) {
             form.setFieldsValue({
                 ...config,
             });
+            setRandomnessValue(config.randomness);
+            setSpeechRateValue(config.speechRate);
         }
-    }, [form, open])
+    }, [form, open, config])
 
 
     return (
@@ -61,7 +61,10 @@ export default function SettingModal(props: any) {
                     <Slider
                         min={0}
                         max={2}
-                        onChange={setRandomnessValue}
+                        onChange={(value) => {
+                            setRandomnessValue(value);
+                            form.setFieldsValue({randomness: value});
+                        }}
                         value={randomnessValue}
                         step={0.01}
                     />
@@ -71,7 +74,10 @@ export default function SettingModal(props: any) {
                     <Slider
                         min={0.25}
                         max={4}
-                        onChange={setSpeechRateValue}
+                        onChange={(value) => {
+                            setSpeechRateValue(value);
+                            form.setFieldsValue({speechRate: value});
+                        }}
                         value={speechRateValue}
                         step={0.01}
                     />
